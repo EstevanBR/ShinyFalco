@@ -3,6 +3,8 @@
 #include <string.h>
 
 #define DEFAULT_NUMBER_OF_COSTUMES 4
+#define DEFAULT_NUMBER_OF_JACKET_MATERIALS 6
+uint16_t bitOfWork(uint16_t);
 int main(int argc, char const *argv[])
 {
 	/* code */
@@ -13,12 +15,24 @@ int main(int argc, char const *argv[])
 		"PlFcRe.dat",	// red
 		"PlFcBu.dat"	// blue
 	};
-	puts("Enter number corresponding to choice:");
+	long const arrayOfJacketOffsets[DEFAULT_NUMBER_OF_JACKET_MATERIALS] = {
+		0x6FEE,
+		0x70AE,
+		0x716E,
+		0x7D9A,
+		0x7E5A,
+		0X7F1A
+	};
+	for (int i = 0; i < DEFAULT_NUMBER_OF_JACKET_MATERIALS; i++) {
+		printf("\noffset: %ld", arrayOfJacketOffsets[i]);
+	}
+
+	puts("\nEnter number corresponding to choice:");
 	for (int i = 0; i < DEFAULT_NUMBER_OF_COSTUMES; i++) {
 		printf("%d: %s\n", i, falcoDATs[i]);
 	}
 	uint8_t choice;
-	char fileName[11];
+	char fileName[255];
 	scanf("%" SCNu8, &choice);
 	if (choice >= 0 && choice < DEFAULT_NUMBER_OF_COSTUMES) {
 		strcpy(fileName, falcoDATs[choice]);
@@ -28,41 +42,60 @@ int main(int argc, char const *argv[])
 		return -1;
 	}
 
-	fp = fopen(fileName, "r+");
-	long bytes = 243998;
-	long arrayOfJacketOffsets = {0x6FEE};
-	uint8_t BUFFER[bytes];
-	printf("%lu\n", sizeof(BUFFER));
+	fp = fopen(fileName, "rb");
 	if (fp == NULL) {
 		puts("failed to open file \007");
 		return -1;
 	} else {
 		puts("succesfully opened file");
 		fseek(fp,0,SEEK_END);
-		printf("size of file is : %ld\n", ftell(fp));
-		fseek(fp,0,SEEK_SET);
-		//should be approx 243,998 bytes
-		fread(BUFFER, sizeof(uint8_t), bytes, fp);
-		for (int i = 0; i <100; i++) {
-			if (i % 2 == 0 && i > 0) {
+		long file_size = ftell(fp);
+		printf("size of file is : %ld\n", file_size);
+
+		uint8_t BUFFER[file_size];
+		fseek(fp, 0, SEEK_SET);
+		fread(BUFFER, sizeof(uint8_t), file_size, fp);
+		for (int i = 0; i<500;i++) {
+			printf("%.02" PRIX8, BUFFER[i]);
+			if (i % 2 == 0) {
 				printf(" ");
 			}
-			if (i % 16 == 0 && i > 0) {
+			if (i % 32 == 0) {
 				printf("\n");
 			}
-			printf("%.02X" /*PRIu8*/, BUFFER[i]);
 		}
 
-		fseek (fp,0x6FEF,SEEK_SET);
-		uint16_t jacket;
-		printf("\njacket is: %#.02X" /*PRIu8*/, BUFFER[0x6FEF]);
-
-		fseek (fp,0x6FEE,SEEK_SET);
-		fscanf(fp, "%" SCNu16, &jacket);
-		printf("\nafter fscanf: %" PRIu16,jacket);
+		for (int i = 0; i < DEFAULT_NUMBER_OF_JACKET_MATERIALS; i++) {
+			long offset = arrayOfJacketOffsets[i];
+			uint16_t jacket;
+			fseek(fp, offset, SEEK_SET);
+			fread(&jacket, sizeof(uint16_t), 1, fp);
+			jacket = bitOfWork(jacket);
+			if (jacket == 0x001C) {
+				printf("SHINY!");
+				BUFFER[offset] = 0x00;
+				BUFFER[offset+1] = 0x14;
+			} else if (jacket == 0x0014) {
+				printf("MATTE!");
+				BUFFER[offset] = 0x00;
+				BUFFER[offset+1] = 0x1C;
+			} else {
+				printf("ERROR!");
+			}
+			printf(" jacket: %#0.2x\n", jacket);
+		}
+		FILE *fpout;
+		fpout = fopen("out.dat", "wb");
+		fwrite(BUFFER, sizeof(uint8_t), file_size, fpout);
+		fclose(fpout);
 	}
 
-	puts("\nclosing file...");
+	puts("\nClosing file...");
 	fclose(fp);
 	return 0;
+}
+
+uint16_t bitOfWork(uint16_t bananas) {
+	return ((bananas & 0xFF00) >> 8) | ((bananas & 0x00FF) << 8);
+
 }
