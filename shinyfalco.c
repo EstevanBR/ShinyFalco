@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <inttypes.h>
+#include <string.h>
+
 #define DEFAULT_NUMBER_OF_COSTUMES 4
 int main(int argc, char const *argv[])
 {
@@ -11,18 +13,28 @@ int main(int argc, char const *argv[])
 		"PlFcRe.dat",	// red
 		"PlFcBu.dat"	// blue
 	};
-
+	puts("Enter number corresponding to choice:");
 	for (int i = 0; i < DEFAULT_NUMBER_OF_COSTUMES; i++) {
-		printf("%s\n", falcoDATs[i]);
+		printf("%d: %s\n", i, falcoDATs[i]);
+	}
+	uint8_t choice;
+	char fileName[11];
+	scanf("%" SCNu8, &choice);
+	if (choice >= 0 && choice < DEFAULT_NUMBER_OF_COSTUMES) {
+		strcpy(fileName, falcoDATs[choice]);
+		printf("You chose: %s\n", fileName);
+	} else {
+		puts("invalid choice \007");
+		return -1;
 	}
 
-	fp = fopen("PlFcGr.dat", "r+");
+	fp = fopen(fileName, "r+");
 	long bytes = 243998;
 	long arrayOfJacketOffsets = {0x6FEE};
 	uint8_t BUFFER[bytes];
 	printf("%lu\n", sizeof(BUFFER));
 	if (fp == NULL) {
-		puts("failed to open file");
+		puts("failed to open file \007");
 		return -1;
 	} else {
 		puts("succesfully opened file");
