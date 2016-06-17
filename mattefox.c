@@ -57,15 +57,6 @@ int main(int argc, char const *argv[])
 		uint8_t BUFFER[file_size];
 		fseek(fp, 0, SEEK_SET);
 		fread(BUFFER, sizeof(uint8_t), file_size, fp);
-		// for (int i = 0; i<500;i++) {
-		// 	printf("%.02" PRIX8, BUFFER[i]);
-		// 	if (i % 2 == 0) {
-		// 		printf(" ");
-		// 	}
-		// 	if (i % 32 == 0) {
-		// 		printf("\n");
-		// 	}
-		// }
 
 		for (int i = 0; i < DEFAULT_NUMBER_OF_JACKET_MATERIALS; i++) {
 			long offset = arrayOfJacketOffsets[i];
