@@ -7,16 +7,15 @@
 uint16_t bitOfWork(uint16_t);
 int main(int argc, char const *argv[])
 {
-	/* code */
 	puts("EDITING FALCO");
 	FILE *fp;
-	char const *falcoDATs[DEFAULT_NUMBER_OF_COSTUMES] = {
+	static char *falcoDATs[DEFAULT_NUMBER_OF_COSTUMES] = {
 		"PlFcNr.dat",	// neutral
 		"PlFcGr.dat",	// green
 		"PlFcRe.dat",	// red
 		"PlFcBu.dat"	// blue
 	};
-	long const arrayOfJacketOffsets[DEFAULT_NUMBER_OF_JACKET_MATERIALS] = {
+	static long arrayOfJacketOffsets[DEFAULT_NUMBER_OF_JACKET_MATERIALS] = {
 		0x6FEE,
 		0x70AE,
 		0x716E,

@@ -8,15 +8,14 @@ uint16_t bitOfWork(uint16_t);
 int main(int argc, char const *argv[])
 {
 	puts("EDITING FOX");
-	/* code */
 	FILE *fp;
-	char const *falcoDATs[DEFAULT_NUMBER_OF_COSTUMES] = {
+	static char *falcoDATs[DEFAULT_NUMBER_OF_COSTUMES] = {
 		"PlFxNr.dat",	// neutral
 		"PlFxGr.dat",	// green
 		"PlFxOr.dat",	// orange
 		"PlFxLa.dat"	// blue
 	};
-	long const arrayOfJacketOffsets[DEFAULT_NUMBER_OF_JACKET_MATERIALS] = {
+	static long arrayOfJacketOffsets[DEFAULT_NUMBER_OF_JACKET_MATERIALS] = {
 		0x9952,
 		0x9A12,
 		0x9B92,
@@ -27,7 +26,7 @@ int main(int argc, char const *argv[])
 		0xB2B2
 	};
 	for (int i = 0; i < DEFAULT_NUMBER_OF_JACKET_MATERIALS; i++) {
-		printf("offset: %ld\n", arrayOfJacketOffsets[i]);
+		printf("offset: %#X\n", arrayOfJacketOffsets[i]);
 	}
 
 	puts("\nEnter number corresponding to choice:");
@@ -70,6 +69,8 @@ int main(int argc, char const *argv[])
 
 		for (int i = 0; i < DEFAULT_NUMBER_OF_JACKET_MATERIALS; i++) {
 			long offset = arrayOfJacketOffsets[i];
+			printf("\n%d offset: %#X", i, offset);
+			printf("\narrayOfJacketOffsets[i]: %#X", arrayOfJacketOffsets[i]);
 			uint16_t jacket;
 			fseek(fp, offset, SEEK_SET);
 			fread(&jacket, sizeof(uint16_t), 1, fp);
@@ -83,7 +84,7 @@ int main(int argc, char const *argv[])
 				BUFFER[offset] = 0x00;
 				BUFFER[offset+1] = 0x1C;
 			} else {
-				printf("ERROR!");
+				printf("\nERROR!");
 			}
 			printf("\nwas: %#0.2x ::", jacket);
 			printf("is:  %#0.2x\n", BUFFER[offset+1]);
