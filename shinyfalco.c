@@ -1,9 +1,21 @@
 #include <stdio.h>
 #include <inttypes.h>
+#define DEFAULT_NUMBER_OF_COSTUMES 4
 int main(int argc, char const *argv[])
 {
 	/* code */
 	FILE *fp;
+	char const *falcoDATs[DEFAULT_NUMBER_OF_COSTUMES] = {
+		"PlFcNr.dat",	// neutral
+		"PlFcGr.dat",	// green
+		"PlFcRe.dat",	// red
+		"PlFcBu.dat"	// blue
+	};
+
+	for (int i = 0; i < DEFAULT_NUMBER_OF_COSTUMES; i++) {
+		printf("%s\n", falcoDATs[i]);
+	}
+
 	fp = fopen("PlFcGr.dat", "r+");
 	long bytes = 243998;
 	long arrayOfJacketOffsets = {0x6FEE};
