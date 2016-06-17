@@ -4,7 +4,7 @@
 
 #define DEFAULT_NUMBER_OF_COSTUMES 4
 #define DEFAULT_NUMBER_OF_JACKET_MATERIALS 8
-uint16_t bitOfWork(uint16_t);
+uint16_t byteSwapper(uint16_t);
 int main(int argc, char const *argv[])
 {
 	puts("EDITING FOX");
@@ -65,7 +65,7 @@ int main(int argc, char const *argv[])
 			uint16_t jacket;
 			fseek(fp, offset, SEEK_SET);
 			fread(&jacket, sizeof(uint16_t), 1, fp);
-			jacket = bitOfWork(jacket);
+			jacket = byteSwapper(jacket);
 			if (jacket == 0x001C) {
 				printf("\nmaking the jacket matte");
 				BUFFER[offset] = 0x00;
@@ -94,7 +94,15 @@ int main(int argc, char const *argv[])
 	return 0;
 }
 
-uint16_t bitOfWork(uint16_t bananas) {
+uint16_t byteSwapper(uint16_t bananas) {
+	//this function takes a 2 byte unsigned int,
+	//and returns a new 2 byte int,
+	//with the first byte swapped with the last byte
+	/*
+	so:
+		before: 0x2468
+		after:  0x6824
+	*/
 	return ((bananas & 0xFF00) >> 8) | ((bananas & 0x00FF) << 8);
 
 }
