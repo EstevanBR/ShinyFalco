@@ -9,13 +9,13 @@ int main(int argc, char const *argv[])
 {
 	puts("EDITING FALCO");
 	FILE *fp;
-	static char *falcoDATs[DEFAULT_NUMBER_OF_COSTUMES] = {
+	char const *falcoDATs[DEFAULT_NUMBER_OF_COSTUMES] = {
 		"PlFcNr.dat",	// neutral
 		"PlFcGr.dat",	// green
 		"PlFcRe.dat",	// red
 		"PlFcBu.dat"	// blue
 	};
-	static long arrayOfJacketOffsets[DEFAULT_NUMBER_OF_JACKET_MATERIALS] = {
+	long const arrayOfJacketOffsets[DEFAULT_NUMBER_OF_JACKET_MATERIALS] = {
 		0x6FEE,
 		0x70AE,
 		0x716E,

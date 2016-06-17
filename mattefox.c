@@ -9,13 +9,13 @@ int main(int argc, char const *argv[])
 {
 	puts("EDITING FOX");
 	FILE *fp;
-	static char *falcoDATs[DEFAULT_NUMBER_OF_COSTUMES] = {
+	char const *falcoDATs[DEFAULT_NUMBER_OF_COSTUMES] = {
 		"PlFxNr.dat",	// neutral
 		"PlFxGr.dat",	// green
 		"PlFxOr.dat",	// orange
 		"PlFxLa.dat"	// blue
 	};
-	static long arrayOfJacketOffsets[DEFAULT_NUMBER_OF_JACKET_MATERIALS] = {
+	long const arrayOfJacketOffsets[DEFAULT_NUMBER_OF_JACKET_MATERIALS] = {
 		0x9952,
 		0x9A12,
 		0x9B92,
@@ -33,9 +33,9 @@ int main(int argc, char const *argv[])
 	for (int i = 0; i < DEFAULT_NUMBER_OF_COSTUMES; i++) {
 		printf("%d: %s\n", i, falcoDATs[i]);
 	}
-	uint8_t choice;
+	int choice;
 	char fileName[255];
-	scanf("%" SCNu8, &choice);
+	scanf("%d", &choice);
 	if (choice >= 0 && choice < DEFAULT_NUMBER_OF_COSTUMES) {
 		strcpy(fileName, falcoDATs[choice]);
 		printf("You chose: %s\n", fileName);
