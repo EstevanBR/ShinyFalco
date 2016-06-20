@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <inttypes.h>
 #include <string.h>
+#include "matstruct.h"
 
 #define DEFAULT_NUMBER_OF_COSTUMES 4
 #define DEFAULT_NUMBER_OF_JACKET_MATERIALS 6
-uint16_t byteSwapper(uint16_t);
+uint16_t endiannessSwapper(uint16_t);
 int main(int argc, char const *argv[])
 {
 	puts("EDITING FALCO");
@@ -23,8 +24,18 @@ int main(int argc, char const *argv[])
 		0x7E5A,
 		0X7F1A
 	};
+
+	long const arrayOfMatOffsets[DEFAULT_NUMBER_OF_JACKET_MATERIALS] = {
+		0x6FE8,
+		0x70A8,
+		0x7168,
+		0x7D94,
+		0x7E54,
+		0X7F14
+	};
+
 	for (int i = 0; i < DEFAULT_NUMBER_OF_JACKET_MATERIALS; i++) {
-		printf("offset: %ld\n", arrayOfJacketOffsets[i]);
+		printf("offset: %#lx\n", arrayOfJacketOffsets[i]);
 	}
 
 	puts("\nEnter number corresponding to choice:");
@@ -56,20 +67,26 @@ int main(int argc, char const *argv[])
 		fseek(fp, 0, SEEK_SET);
 		fread(BUFFER, sizeof(uint8_t), file_size, fp);
 
-		for (int i = 0; i < DEFAULT_NUMBER_OF_JACKET_MATERIALS; i++) {
+		for (int i = 0; i < DEFAULT_NUMBER_OF_JACKET_MATERIALS; i++) {			
+			matstruct mat;
+			long matOffset = arrayOfMatOffsets[i];
+			fseek (fp, matOffset, SEEK_SET);
+			fread(&mat, sizeof(mat), 1, fp);
+			printf("\nunknown value: %#.04x", endiannessSwapper(mat.unknownValue));
+			
 			long offset = arrayOfJacketOffsets[i];
 			uint16_t jacket;
 			fseek(fp, offset, SEEK_SET);
 			fread(&jacket, sizeof(uint16_t), 1, fp);
-			jacket = byteSwapper(jacket);
-			if (jacket == 0x001C) {
+			jacket = endiannessSwapper(jacket);
+			if (jacket == 0x001c) {
 				printf("\nmaking the jacket matte");
 				BUFFER[offset] = 0x00;
 				BUFFER[offset+1] = 0x14;
 			} else if (jacket == 0x0014) {
 				printf("\nmaking the jacket shiny");
 				BUFFER[offset] = 0x00;
-				BUFFER[offset+1] = 0x1C;
+				BUFFER[offset+1] = 0x1c;
 			} else {
 				printf("ERROR!");
 			}
@@ -90,7 +107,7 @@ int main(int argc, char const *argv[])
 	return 0;
 }
 
-uint16_t byteSwapper(uint16_t bananas) {
+uint16_t endiannessSwapper(uint16_t bananas) {
 	//this function takes a 2 byte unsigned int,
 	//and returns a new 2 byte int,
 	//with the first byte swapped with the last byte
@@ -99,6 +116,6 @@ uint16_t byteSwapper(uint16_t bananas) {
 		before: 0x2468
 		after:  0x6824
 	*/
-	return ((bananas & 0xFF00) >> 8) | ((bananas & 0x00FF) << 8);
+	return ((bananas & 0xff00) >> 8) | ((bananas & 0x00ff) << 8);
 
 }
