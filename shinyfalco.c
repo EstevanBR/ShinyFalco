@@ -31,9 +31,9 @@ int main(int argc, char const *argv[])
 	for (int i = 0; i < DEFAULT_NUMBER_OF_COSTUMES; i++) {
 		printf("%d: %s\n", i, falcoDATs[i]);
 	}
-	uint8_t choice;
+	uint16_t choice;
 	char fileName[255];
-	scanf("%" SCNu8, &choice);
+	scanf("%" SCNu16, &choice);
 	if (choice >= 0 && choice < DEFAULT_NUMBER_OF_COSTUMES) {
 		strcpy(fileName, falcoDATs[choice]);
 		printf("You chose: %s\n", fileName);
