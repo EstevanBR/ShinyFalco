@@ -24,16 +24,16 @@ int main(int argc, char const *argv[])
 		0X7F1A
 	};
 	for (int i = 0; i < DEFAULT_NUMBER_OF_JACKET_MATERIALS; i++) {
-		printf("offset: %ld\n", arrayOfJacketOffsets[i]);
+		printf("offset: %#lx\n", arrayOfJacketOffsets[i]);
 	}
 
 	puts("\nEnter number corresponding to choice:");
 	for (int i = 0; i < DEFAULT_NUMBER_OF_COSTUMES; i++) {
 		printf("%d: %s\n", i, falcoDATs[i]);
 	}
-	uint16_t choice;
+	int choice;
 	char fileName[255];
-	scanf("%" SCNu16, &choice);
+	scanf("%d", &choice);
 	if (choice >= 0 && choice < DEFAULT_NUMBER_OF_COSTUMES) {
 		strcpy(fileName, falcoDATs[choice]);
 		printf("You chose: %s\n", fileName);
@@ -55,15 +55,6 @@ int main(int argc, char const *argv[])
 		uint8_t BUFFER[file_size];
 		fseek(fp, 0, SEEK_SET);
 		fread(BUFFER, sizeof(uint8_t), file_size, fp);
-		// for (int i = 0; i<500;i++) {
-		// 	printf("%.02" PRIX8, BUFFER[i]);
-		// 	if (i % 2 == 0) {
-		// 		printf(" ");
-		// 	}
-		// 	if (i % 32 == 0) {
-		// 		printf("\n");
-		// 	}
-		// }
 
 		for (int i = 0; i < DEFAULT_NUMBER_OF_JACKET_MATERIALS; i++) {
 			long offset = arrayOfJacketOffsets[i];
